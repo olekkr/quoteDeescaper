@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "QuoteDeescaper": {
+      "commandName": "Project",
+      "commandLineArgs": "\"C:\\dev\\quoteDeescaper\\bin\\Debug\\netcoreapp3.1\\test.csv\" \"C:\\dev\\quoteDeescaper\\bin\\Debug\\netcoreapp3.1\\test1.csv\""
+    }
+  }
+}
