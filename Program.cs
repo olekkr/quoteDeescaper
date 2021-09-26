@@ -10,7 +10,7 @@ namespace csv_double_quote_deescaper
         static void Main(string[] args)
         {
 
-            if (args.Length != 2)
+            if (args.Length < 2)
             {
                 Console.Error.WriteLine("[ERROR] Expected: [input] [output]");
                 return;
@@ -18,7 +18,7 @@ namespace csv_double_quote_deescaper
 
             DirectoryCopy(args[0], args[1], true);
             DirReplace(args[1]);
-            string _ = Console.ReadLine();
+            // string _ = Console.ReadLine();
         }
 
         static void DirReplace(string sDir)
@@ -45,31 +45,34 @@ namespace csv_double_quote_deescaper
             
             String fullText = File.ReadAllText(sDir);
             char[] fullTextArray = fullText.ToCharArray();
-            
+
+            Console.WriteLine("Started: {0}", sDir);
             for (Match cell = Regex.Match(fullText, @"([^;]+|\;);"); cell.Success; cell = cell.NextMatch()) // segments each cell in csv
             {
-                char[] matchStr = cell.ToString().Substring(1, cell.ToString().Length - 3).ToCharArray();
+                if (cell.ToString().Length >= 3)
+                { 
+                    char[] matchStr = cell.ToString().Substring(1, cell.ToString().Length - 3).ToCharArray();
                 
-                for (int i = 0; i < matchStr.Length - 1; i++)
-                {
-                    if (matchStr.Length == 0) {
-                        break;
-                    }
-
-                    if (matchStr[i] == '\"' && matchStr[i+1] == '\"')
+                    for (int i = 0; i < matchStr.Length - 1; i++)
                     {
-                        fullTextArray[i + cell.Index + 1] = '\'';
-                        fullTextArray[i + cell.Index + 2] = '\'';
-                        matchStr[i ] = '\'';
-                        matchStr[i + 1] = '\'';
-                        String cellStr = new String(matchStr);
-                        Console.WriteLine($" {cellStr} : {sDir}");
+                        if (matchStr.Length == 0) {
+                            break;
+                        }
+
+                        if (matchStr[i] == '\"' && matchStr[i+1] == '\"')
+                        {
+                            fullTextArray[i + cell.Index + 1] = '\'';
+                            fullTextArray[i + cell.Index + 2] = '\'';
+                            matchStr[i ] = '\'';
+                            matchStr[i + 1] = '\'';
+                            String cellStr = new String(matchStr);
+                            Console.WriteLine($" {cellStr} : {sDir}");
+                        }
                     }
                 }
-
             }
             System.IO.File.WriteAllText(sDir, new string(fullTextArray), Encoding.UTF8);
-            Console.WriteLine("done");
+            // Console.WriteLine("Done:   {0}", sDir);
             
         }
         static void DirectoryCopy(string sourceDirName, string destDirName, bool copySubDirs)
