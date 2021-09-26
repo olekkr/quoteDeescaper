@@ -42,7 +42,7 @@ namespace csv_double_quote_deescaper
 
         static void FileReplace(string sDir)
         {
-            
+
             String fullText = File.ReadAllText(sDir);
             char[] fullTextArray = fullText.ToCharArray();
 
@@ -50,20 +50,21 @@ namespace csv_double_quote_deescaper
             for (Match cell = Regex.Match(fullText, @"([^;]+|\;);"); cell.Success; cell = cell.NextMatch()) // segments each cell in csv
             {
                 if (cell.ToString().Length >= 3)
-                { 
+                {
                     char[] matchStr = cell.ToString().Substring(1, cell.ToString().Length - 3).ToCharArray();
-                
+
                     for (int i = 0; i < matchStr.Length - 1; i++)
                     {
-                        if (matchStr.Length == 0) {
+                        if (matchStr.Length == 0)
+                        {
                             break;
                         }
 
-                        if (matchStr[i] == '\"' && matchStr[i+1] == '\"')
+                        if (matchStr[i] == '\"' && matchStr[i + 1] == '\"')
                         {
                             fullTextArray[i + cell.Index + 1] = '\'';
                             fullTextArray[i + cell.Index + 2] = '\'';
-                            matchStr[i ] = '\'';
+                            matchStr[i] = '\'';
                             matchStr[i + 1] = '\'';
                             String cellStr = new String(matchStr);
                             Console.WriteLine($" {cellStr} : {sDir}");
@@ -73,7 +74,7 @@ namespace csv_double_quote_deescaper
             }
             System.IO.File.WriteAllText(sDir, new string(fullTextArray), Encoding.UTF8);
             // Console.WriteLine("Done:   {0}", sDir);
-            
+
         }
         static void DirectoryCopy(string sourceDirName, string destDirName, bool copySubDirs)
         {
