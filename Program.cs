@@ -10,40 +10,41 @@ namespace csv_double_quote_deescaper
         static void Main(string[] args)
         {
 
-            if (args.Length < 2)
+            if (args.Length < 3)
             {
-                Console.Error.WriteLine("[ERROR] Expected: [input] [output]");
+                Console.Error.WriteLine("[ERROR] Expected: [input] [output] [Encoding e.g. 1252]");
                 return;
             }
 
+            int encoding = Convert.ToInt32(args[2]);
             DirectoryCopy(args[0], args[1], true);
-            DirReplace(args[1]);
+            DirReplace(args[1], encoding);
             // string _ = Console.ReadLine();
         }
 
-        static void DirReplace(string sDir)
+        static void DirReplace(string sDir, int encoding)
         {
             if (!File.GetAttributes(sDir).HasFlag(FileAttributes.Directory)) // checks if its a file
             {
-                FileReplace(sDir);
+                FileReplace(sDir, encoding);
             }
             else
             {
                 foreach (string f in Directory.GetFiles(sDir))
                 {
-                    FileReplace(f);
+                    FileReplace(f, encoding);
                 }
                 foreach (string d in Directory.GetDirectories(sDir))
                 {
-                    DirReplace(d);
+                    DirReplace(d, encoding);
                 }
             }
         }
 
-        static void FileReplace(string sDir)
+        static void FileReplace(string sDir, int encoding)
         {
-
-            String fullText = File.ReadAllText(sDir);
+            Encoding strEnc = Encoding.GetEncoding(encoding);
+            String fullText = File.ReadAllText(sDir, strEnc);
             char[] fullTextArray = fullText.ToCharArray();
 
             Console.WriteLine("Started: {0}", sDir);
@@ -72,7 +73,7 @@ namespace csv_double_quote_deescaper
                     }
                 }
             }
-            System.IO.File.WriteAllText(sDir, new string(fullTextArray), Encoding.UTF8);
+            System.IO.File.WriteAllText(sDir, new string(fullTextArray), strEnc);
             // Console.WriteLine("Done:   {0}", sDir);
 
         }
